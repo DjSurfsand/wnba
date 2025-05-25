@@ -1,0 +1,25 @@
+name: WNBA Updates
+on:
+  schedule:
+    - cron: "0 8 * * *"  # 8 AM UTC (4 AM EDT)
+    - cron: "0 23 * * *" # 11 PM UTC (7 PM EDT)
+  workflow_dispatch:  # Allows manual triggering for testing
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Install dependencies
+        run: pip install py_ball requests tweepy
+      - name: Run script
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python wnba_updates.py
